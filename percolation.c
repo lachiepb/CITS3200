@@ -26,6 +26,16 @@ typedef struct _g{
     int visited;
 } NODE;
 
+typedef struct _p{
+    struct _p *north;
+    struct _p *south;
+    struct _p *east;
+    struct _p *west;
+    int rBond;
+    int bBond;
+    int visited;
+}BOND;
+
 //function for exit during input
 void exitStatus(char *ex){
     if (strcmp("EXIT",ex)==0){
