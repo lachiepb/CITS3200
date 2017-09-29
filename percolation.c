@@ -120,31 +120,31 @@ void joinGrid(NODE **grid){
             int NSEW[4];
 
             if(i==0){
-                NSEW[1]=gridS-1;
-                NSEW[2]=i+1;
+                NSEW[0]=gridS-1;
+                NSEW[1]=i+1;
             }else if(i==gridS-1){
-                NSEW[1]=i-1;
-                NSEW[2]=0;
+                NSEW[0]=i-1;
+                NSEW[1]=0;
             }else{
-                NSEW[1]=i-1;
-                NSEW[2]=i+1;
+                NSEW[0]=i-1;
+                NSEW[1]=i+1;
             }
 
             if(j==0){
-                NSEW[3]=i+1;
-                NSEW[4]=gridS-1;
+                NSEW[2]=i+1;
+                NSEW[3]=gridS-1;
             }else if(j==gridS-1){
-                NSEW[3]=0;
-                NSEW[4]=i-1;
+                NSEW[2]=0;
+                NSEW[3]=i-1;
             }else{
-                NSEW[3]=i+1;
-                NSEW[4]=i-1;
+                NSEW[2]=i+1;
+                NSEW[3]=i-1;
             }
 
-            gp->north = &grid[NSEW[1]][j];
-            gp->south = &grid[NSEW[2]][j];
-            gp->east = &grid[i][NSEW[3]];
-            gp->west = &grid[i][NSEW[4]];
+            gp->north = &grid[NSEW[0]][j];
+            gp->south = &grid[NSEW[1]][j];
+            gp->east = &grid[i][NSEW[2]];
+            gp->west = &grid[i][NSEW[3]];
             gp->visited = 1;
         }
     }
