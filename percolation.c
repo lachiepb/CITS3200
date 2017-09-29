@@ -160,7 +160,7 @@ void joinGrid(NODE **grid){
     }
 }
 
-//function for determining if a grid node is occupied for site percolation (might be changed, we'll see)
+//function for determining if a grid node is occupied for site percolation 
 void sitePerc(NODE **grid){
     for (int i=0; i < gridS; i++){
         for (int j=0; j < gridS; j++){
@@ -178,6 +178,29 @@ void sitePerc(NODE **grid){
                 gp -> occu=1;
             }
 
+        }
+    }
+}
+// fill bonds with occupancy
+void bondPerc(BOND**grid){
+    for (int i=0; i < gridS; i++){
+        for (int j=0; j < gridS; j++){
+            BOND *gp = &grid[i][j];
+            float rOccup;
+            float bOccup;
+            rOccup=rand()/(RAND_MAX);
+            bOccup=rand()/(RAND_MAX);
+
+            if (rOccup <= p){
+                gp -> rBond=0;
+            } else {
+                gp -> rBond=1;
+            }
+            if (bOccup <= p){
+                gp -> bBond=0;
+            } else {
+                gp -> bBond=1;
+            }
         }
     }
 }
