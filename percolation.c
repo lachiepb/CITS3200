@@ -181,6 +181,7 @@ void sitePerc(NODE **grid){
         }
     }
 }
+
 // fill bonds with occupancy
 void bondPerc(BOND**grid){
     for (int i=0; i < gridS; i++){
@@ -249,7 +250,7 @@ int main2()
         }
 
         joinGrid(grid);
-        //sitePerc(grid);
+        sitePerc(grid);
     } else {
         BOND **grid;
         grid = (BOND **) malloc(sizeof(BOND *) * gridS);
@@ -258,8 +259,7 @@ int main2()
         }
 
         joinGrid(grid);
-        //bondPerc(grid);
-
+        bondPerc(grid);
     }
     
 
