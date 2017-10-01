@@ -24,7 +24,7 @@ typedef struct _g{
     struct _g *west;
     int occu;
     int visited;
-} NODE;
+}NODE;
 
 typedef struct _p{
     struct _p *north;
@@ -241,17 +241,27 @@ int main2()
         validt = percType();
     }
 
-    NODE **grid;
-    grid = (NODE **) malloc(sizeof(NODE *) * gridS);
-    for (int i=0; i < gridS; i++){
-        grid[i]= (NODE *) malloc(sizeof(NODE) * gridS);
-    }
-
-    joinGrid(grid);
-
     if (validp==0){
-        sitePerc(grid);
+        NODE **grid;
+        grid = (NODE **) malloc(sizeof(NODE *) * gridS);
+        for (int i=0; i < gridS; i++){
+            grid[i]= (NODE *) malloc(sizeof(NODE) * gridS);
+        }
+
+        joinGrid(grid);
+        //sitePerc(grid);
+    } else {
+        BOND **grid;
+        grid = (BOND **) malloc(sizeof(BOND *) * gridS);
+        for (int i=0; i < gridS; i++){
+            grid[i]= (BOND *) malloc(sizeof(BOND) * gridS);
+        }
+
+        joinGrid(grid);
+        //bondPerc(grid);
+
     }
+    
 
     exit (EXIT_SUCCESS);
 }
