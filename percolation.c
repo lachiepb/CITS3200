@@ -15,7 +15,8 @@ int gridS = 0;
 float p = 0.0;
 char perc[CHARLEN];
 int percT;
-
+int *visitedRows;
+int *visitedCols;
 //struct for each grid node
 typedef struct _g{
     struct _g *north;
@@ -24,6 +25,10 @@ typedef struct _g{
     struct _g *west;
     int occu;
     int visited;
+    int cluster;
+    int nodei ;
+    int nodej;
+
 }NODE;
 
 typedef struct _p{
@@ -127,6 +132,8 @@ void joinGrid(NODE **grid){
     for (int i=0; i < gridS; i++){
         for (int j=0; j < gridS; j++){
             NODE *gp = &grid[i][j];
+            gp->nodei=i;
+            gp->nodej=j;
             int NSEW[4];
 
             if(i==0){
@@ -183,7 +190,7 @@ void sitePerc(NODE **grid){
 }
 
 // fill bonds with occupancy
-void bondPerc(BOND**grid){
+void bondPerc(BOND **grid){
     for (int i=0; i < gridS; i++){
         for (int j=0; j < gridS; j++){
             BOND *gp = &grid[i][j];
@@ -205,6 +212,52 @@ void bondPerc(BOND**grid){
         }
     }
 }
+// returns percolates/not
+int siteCheck(NODE **grid){
+    int lrgestCluster;
+
+    // exhaustively check every node (skip if visited)
+
+    for(int i=0;i<gridS;i++){
+        for(int j=0;j<gridS;j++){
+            if(grid[i][j].visited==0){ continue;}
+            int percolates=0;
+
+            for(int x=0;x<gridS;x++){
+                visitedRows[x]=1;
+                visitedCols[x]=1;
+            }
+            visitedRows[i]=0;
+            visitedCols[j]=0;
+            // fill 0's
+            NODE *gridPoint=&grid[i][j];
+
+            int clusterSize=siteDFS(gridPoint);
+            if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
+            for(int e=0;e<gridS;e++){
+                if(visitedCols[e]==1&&visitedRows[e]==1) {
+                    percolates=1;
+                    break;
+                }
+            }
+            if(lrgestCluster>0.5*gridS^2){
+                i=gridS;
+                break;
+            }
+        }
+    }
+}
+int siteDFS(NODE *gridPoint){
+    if(gridPoint->visited==0||gridPoint->occu==1) return 0;
+    visitedRows[gridPoint->nodei]=0;
+    visitedCols[gridPoint->nodej]=0;
+    gridPoint->visited=0;
+    // If node was not not occupied, it must be occupied. so return 1 + largest cluster of any children.
+    return 1 + siteDFS(gridPoint->north)+siteDFS(gridPoint->east)+siteDFS(gridPoint->west)+siteDFS(gridPoint->south);
+}
+
+
+
 
 int main2()
 {
