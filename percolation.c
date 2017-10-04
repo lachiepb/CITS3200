@@ -25,7 +25,6 @@ typedef struct _g{
     struct _g *west;
     int occu;
     int visited;
-    int cluster;
     int nodei ;
     int nodej;
 
@@ -39,6 +38,9 @@ typedef struct _p{
     int rBond;
     int bBond;
     int visited;
+    int nodei;
+    int nodej;
+
 }BOND;
 
 //function for exit during input
@@ -108,7 +110,7 @@ int percStatus(void){
 int percType(void){
     char temp[CHARLEN];
 
-    printf("\nEnter 0, 1 or 2 for rows, columns or row/column percolation:");
+    printf("\nEnter 0, 1 or 2 for vertical, horizontal or vertical/horizontal percolation:");
     scanf("%s",temp);
     exitStatus(temp);
 
@@ -158,10 +160,10 @@ void joinGridN(NODE **grid){
                 NSEW[3]=i-1;
             }
 
-            gp->north = &grid[i][NSEW[0]];
-            gp->south = &grid[i][NSEW[1]];
-            gp->east = &grid[NSEW[2]][j];
-            gp->west = &grid[NSEW[3]][j];
+            gp->west = &grid[i][NSEW[0]];
+            gp->east = &grid[i][NSEW[1]];
+            gp->south = &grid[NSEW[2]][j];
+            gp->north = &grid[NSEW[3]][j];
             gp->visited = 1;
         }
     }
@@ -171,6 +173,8 @@ void joinGridB(BOND **grid){
     for (int i=0; i < gridS; i++){
         for (int j=0; j < gridS; j++){
             BOND *gp = &grid[i][j];
+            gp->nodei=i;
+            gp->nodej=j;
             int NSEW[4];
 
             if(j==0){
@@ -184,7 +188,7 @@ void joinGridB(BOND **grid){
                 NSEW[1]=i+1;
             }
 
-            if(j==0){
+            if(i==0){
                 NSEW[2]=i+1;
                 NSEW[3]=gridS-1;
             }else if(j==gridS-1){
@@ -195,10 +199,10 @@ void joinGridB(BOND **grid){
                 NSEW[3]=i-1;
             }
 
-            gp->north = &grid[i][NSEW[0]];
-            gp->south = &grid[i][NSEW[1]];
-            gp->east = &grid[NSEW[2]][j];
-            gp->west = &grid[NSEW[3]][j];
+            gp->west = &grid[i][NSEW[0]];
+            gp->east = &grid[i][NSEW[1]];
+            gp->south = &grid[NSEW[2]][j];
+            gp->north = &grid[NSEW[3]][j];
             gp->visited = 1;
         }
     }
@@ -209,8 +213,6 @@ void sitePerc(NODE **grid){
         for (int j=0; j < gridS; j++){
             NODE *gp = &grid[i][j];
             float occup;
-
-            //visited = 1;
 
             occup = rand();
             occup /= (RAND_MAX);
@@ -232,6 +234,7 @@ void bondPerc(BOND **grid){
             BOND *gp = &grid[i][j];
             float rOccup;
             float bOccup;
+
             rOccup=rand()/(RAND_MAX);
             bOccup=rand()/(RAND_MAX);
 
@@ -255,26 +258,21 @@ int siteDFS(NODE *gridPoint,int visitedRows[], int visitedCols[]){
     visitedCols[gridPoint->nodej]=0;
     gridPoint->visited=0;
     // If node was not not occupied, it must be occupied. so return 1 + largest cluster of any children.
-    printf("i %i j %i \t", gridPoint->nodei,gridPoint->nodej,stdout);
-    return 1 + siteDFS(gridPoint->north,visitedRows,visitedCols)+siteDFS(gridPoint->east,visitedRows,visitedCols)+siteDFS(gridPoint->west,visitedRows,visitedCols)+siteDFS(gridPoint->south,visitedRows,visitedCols);
+    //printf("i %i j %i \t", gridPoint->nodei,gridPoint->nodej,stdout);
+    return 1 + siteDFS(gridPoint->east,visitedRows,visitedCols)+siteDFS(gridPoint->south,visitedRows,visitedCols)+siteDFS(gridPoint->west,visitedRows,visitedCols)+siteDFS(gridPoint->north,visitedRows,visitedCols);
 }
 // returns percolates/not
 int siteCheck(NODE **grid){
     // exhaustively check every node (skip if visited)
     int percolates=1;
-    int visitedRows[gridS];
-    int visitedCols[gridS];
 
     for(int i=0;i<gridS;i++){
         for(int j=0;j<gridS;j++){
             NODE *gridPoint=&grid[i][j];
             if(gridPoint->visited==0) continue;
 
-
-            for(int x=0;x<gridS;x++){
-                visitedRows[x]=1;
-                visitedCols[x]=1;
-            }
+            int visitedRows[gridS] = {1};
+            int visitedCols[gridS] = {1};
 
             visitedRows[i]=0;
             visitedCols[j]=0;
@@ -283,33 +281,104 @@ int siteCheck(NODE **grid){
             int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
             if (percolates==1) {
-                for (int e = 0; e < gridS; e++) {
-                    if ((visitedCols[e] == 1 && visitedRows[e] == 1)) {
-                        break;
-                    }
+                if (percT == 0) {
+                    for (int e = 0; e < gridS; e++) {
+                        if (visitedRows[e] == 1){
+                            break;
+                        }
 
-                    if (e == gridS - 1) {
-                        percolates = 0;
+                        if (e ==  gridS - 1){
+                            percolates = 0;
+                        }
+                    }
+                } else if (percT == 1){
+                    for (int e = 0; e < gridS; e++) {
+                        if (visitedCols[e] == 1){
+                            break;
+                        }
+
+                        if (e ==  gridS - 1){
+                            percolates = 0;
+                        }
+                    }
+                } else {
+                    for (int e = 0; e < gridS; e++) {
+                        if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
+                            break;
+                        }
+
+                        if (e == gridS - 1) {
+                            percolates = 0;
+                        }
                     }
                 }
             }
-            //if(lrgestCluster>0.5*gridS^2){
-                //i=gridS;
-              //  break;
-            //}
-            printf("\n");
+            //printf("\n");
         }
     }
     return percolates;
 }
 
-int bondDFS(){
+int bondDFS(BOND *gridPoint,int visitedRows[], int visitedCols[]){
+    if(gridPoint->visited==0) return 0;
 
-
-    int swag=5w3g;
+    int swag=53;
     return swag;
 }
 
+int bondCheck(BOND **grid){
+    int  percolates = 1;
+
+    for(int i=0;i<gridS;i++) {
+        for (int j = 0; j < gridS; j++) {
+            BOND *gridPoint = &grid[i][j];
+            if (gridPoint->visited == 0) continue;
+
+            int visitedRows[gridS] = {1};
+            int visitedCols[gridS] = {1};
+
+            visitedRows[i]=0;
+            visitedCols[j]=0;
+
+            int clusterSize=bondDFS(gridPoint,visitedRows,visitedCols);
+            if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
+            if (percolates==1) {
+                if (percT == 0) {
+                    for (int e = 0; e < gridS; e++) {
+                        if (visitedRows[e] == 1){
+                            break;
+                        }
+
+                        if (e ==  gridS - 1){
+                            percolates = 0;
+                        }
+                    }
+                } else if (percT == 1){
+                    for (int e = 0; e < gridS; e++) {
+                        if (visitedCols[e] == 1){
+                            break;
+                        }
+
+                        if (e ==  gridS - 1){
+                            percolates = 0;
+                        }
+                    }
+                } else {
+                    for (int e = 0; e < gridS; e++) {
+                        if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
+                            break;
+                        }
+
+                        if (e == gridS - 1) {
+                            percolates = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return percolates;
+}
 
 
 
