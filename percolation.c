@@ -248,6 +248,7 @@ void bondPerc(BOND **grid){
         }
     }
 }
+
 int siteDFS(NODE *gridPoint,int visitedRows[], int visitedCols[]){
     if(gridPoint->visited==0||gridPoint->occu==1) return 0;
     visitedRows[gridPoint->nodei]=0;
@@ -261,12 +262,14 @@ int siteDFS(NODE *gridPoint,int visitedRows[], int visitedCols[]){
 int siteCheck(NODE **grid){
     // exhaustively check every node (skip if visited)
     int percolates=1;
+    int visitedRows[gridS];
+    int visitedCols[gridS];
+
     for(int i=0;i<gridS;i++){
         for(int j=0;j<gridS;j++){
             NODE *gridPoint=&grid[i][j];
             if(gridPoint->visited==0) continue;
-            int visitedRows[gridS];
-            int visitedCols[gridS];
+
 
             for(int x=0;x<gridS;x++){
                 visitedRows[x]=1;
