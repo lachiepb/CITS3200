@@ -40,6 +40,7 @@ typedef struct _p{
     int visited;
     int nodei;
     int nodej;
+    int check[4];
 
 }BOND;
 
@@ -204,6 +205,9 @@ void joinGridB(BOND **grid){
             gp->south = &grid[NSEW[2]][j];
             gp->north = &grid[NSEW[3]][j];
             gp->visited = 1;
+            for (int k=0;k < 4; k++){
+                gp->check[k]=1;
+            }
         }
     }
 }
@@ -319,11 +323,42 @@ int siteCheck(NODE **grid){
     return percolates;
 }
 
-int bondDFS(BOND *gridPoint,int visitedRows[], int visitedCols[]){
+int bondDFS(BOND *gridPoint,int visitedRows[], int visitedCols[], int clust){
     if(gridPoint->visited==0) return 0;
+    clust += 1;
+    visitedRows[gridPoint->nodei]=0;
+    visitedCols[gridPoint->nodej]=0;
+    gridPoint->visited = 0;
 
-    int swag=53;
-    return swag;
+    if(gridPoint->rBond == 0 && gridPoint->check[0] == 1){
+        clust +=1;
+        bondDFS(gridPoint->east,visitedRows,visitedCols,clust);
+    }
+    gridPoint->check[0] = 0;
+    gridPoint->east.check[2] = 0;
+
+    if(gridPoint->bBond == 0 && gridPoint->check[1] == 1){
+        clust +=1;
+        bondDFS(gridPoint->south,visitedRows,visitedCols,clust);
+    }
+    gridPoint->check[1] = 0;
+    gridPoint->east.check[3] = 0;
+
+    if(gridPoint->west.rBond == 0 && gridPoint->check[2] == 1) {
+        clust +=1;
+        bondDFS(gridPoint->south,visitedRows,visitedCols,clust);
+    }
+    gridPoint->check[2] = 0;
+    gridPoint->east.check[0] = 0;
+
+    if(gridPoint->north.bBond == 0 && gridPoint->check[3] == 1) {
+        clust +=1;
+        bondDFS(gridPoint->north,visitedRows,visitedCols,clust);
+    }
+    gridPoint->check[3] = 0;
+    gridPoint->east.check[1] = 0;
+
+    return clust;
 }
 
 int bondCheck(BOND **grid){
@@ -339,8 +374,9 @@ int bondCheck(BOND **grid){
 
             visitedRows[i]=0;
             visitedCols[j]=0;
+            int clust=0;
 
-            int clusterSize=bondDFS(gridPoint,visitedRows,visitedCols);
+            int clusterSize=bondDFS(gridPoint,visitedRows,visitedCols,clust);
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
             if (percolates==1) {
                 if (percT == 0) {
@@ -434,7 +470,6 @@ int main()
         } else {
             printf("\n The grid does not percolate and has a largest cluster of %i",lrgestCluster,stdout);
         }
-
     } else {
         BOND **grid;
         grid = (BOND **) malloc(sizeof(BOND *) * gridS);
@@ -444,6 +479,13 @@ int main()
 
         joinGridB(grid);
         bondPerc(grid);
+        int ans = bondCheck(grid);
+
+        if (ans==0){
+            printf("\n The grid percolates with largest cluster %i",lrgestCluster,stdout);
+        } else {
+            printf("\n The grid does not percolate and has a largest cluster of %i",lrgestCluster,stdout);
+        }
     }
     
 
