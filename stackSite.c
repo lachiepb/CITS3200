@@ -1,33 +1,33 @@
-#include "stack.h"
-
-int MAXSIZE = 200000000;
-NODE* stack[200000000];
-int top = -1;
+#include "stackSite.h"
+// Awful space performance, we know. we have plenty of memory though.
+int MAXSIZES = 100000000;
+NODE* stackS[100000000];
+int topS = -1;
 
 int isemptySite() {
-    if(top == -1)
+    if(topS == -1)
         return 0;
     else
         return 1;
 }
 
 int isfullSite() {
-    if(top == MAXSIZE)
+    if(topS == MAXSIZES)
         return 0;
     else
         return 1;
 }
 
 NODE* peekSite() {
-    return stack[top];
+    return stackS[topS];
 }
 
 NODE* popSite() {
     NODE* data;
 
     if(isemptySite()==1) {
-        data = stack[top];
-        top = top - 1;
+        data = stackS[topS];
+        topS = topS - 1;
         return data;
     } else {
         printf("Could not retrieve data, Stack is empty.\n");
@@ -37,8 +37,8 @@ NODE* popSite() {
 int pushSite(NODE* data) {
 
     if(isfullSite()==1) {
-        top = top + 1;
-        stack[top] = data;
+        topS = topS + 1;
+        stackS[topS] = data;
     } else {
         printf("Could not insert data, Stack is full.\n");
     }

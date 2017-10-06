@@ -382,7 +382,7 @@ int bondCheck(BOND **grid){
             while (isemptyBond()==1) {
                 clusterSize += bondDFS(popBond(), visitedRows, visitedCols);
             }
-            if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
+            if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;Hello I
             if (percolates==1) {
                 if (percT == 0) {
                     for (int e = 0; e < gridS; e++) {
@@ -393,8 +393,7 @@ int bondCheck(BOND **grid){
                         if (e ==  gridS - 1){
                             percolates = 0;
                         }
-                    }
-                } else if (percT == 1){
+                    }                } else if (percT == 1){
                     for (int e = 0; e < gridS; e++) {
                         if (visitedCols[e] == 1){
                             break;
