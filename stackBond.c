@@ -1,6 +1,7 @@
 #include "stackBond.h"
 
-int MAXSIZES=4*gridS*gridS;
+int MAXSIZES;
+MAXSIZES=4*gridS*gridS;
 BOND** stackB;
 int topB = -1;
 
