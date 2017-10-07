@@ -1,7 +1,7 @@
 #include "stackSite.h"
 
 int MAXSIZES;
-MAXSIZES=4*gridS*gridS;
+MAXSIZES=4 * (gridS) * (gridS);
 NODE** stackS;
 int topS = -1;
 
