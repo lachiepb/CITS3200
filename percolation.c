@@ -290,7 +290,7 @@ int siteCheck(NODE **grid){
             visitedCols[j]=0;
             // fill 0's
             int clusterSize=0;
-            //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
+
             pushSite(gridPoint);
             while(isemptySite()==1){
                 #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols,stackS)  
@@ -416,15 +416,20 @@ int bondCheck(BOND **grid){
             int clusterSize=0;
             pushBond(gridPoint);
             while(isemptyBond()==1){
-                #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
+                #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols)
                 {
                     BOND *bond;
-                    if (isemptyBond()==1){
+                    int temp;
                     #pragma omp critical 
                     {
-                        bond = popBond();
+                        if(isemptyBond()==1){
+                            site = popBond();
+                            temp=0;
+                        }
                     }
-                    clusterSize += bondDFS(bond, visitedRows, visitedCols);
+
+                    if (temp == 0){
+                        clusterSize += bondDFS(bond, visitedRows, visitedCols);
                     }
                 }
             }
