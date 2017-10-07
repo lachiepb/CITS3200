@@ -252,7 +252,7 @@ int siteCheck(NODE **grid){
             visitedCols[j]=0;
             int clusterSize=0;
             //Push site onto stack
-                pushSite(gridPoint)
+                pushSite(gridPoint);
                 gridPoint->visited=0;
             //DFS
             while(isemptySite()==1){
