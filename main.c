@@ -1,12 +1,20 @@
 
 #include"percolation.h"
+
+int trdCount;
+
 int main(int argc, char *argv[])
 {
     // expected input =  program name + site/bond + probablility + gridsize + percolation type (0, horiz, 1, vert, 2 vert+horiz)
     //
 
-    if(argc>5){
+    if(argc>6){
         printf("Too many arguments supplied! (Exiting)");
+        exit(EXIT_SUCCESS);
+    }
+
+    if(argc<6){
+        printf("too few arguments, treating you like a base level plebian");
         exit(EXIT_SUCCESS);
     }
 
@@ -14,15 +22,9 @@ int main(int argc, char *argv[])
     int validg=0;
     int validp;
     int validt=0;
+    int validq=0;
     srand(time(NULL));
-    if(argc<5){
-        printf("too few arguments, treating you like a base level plebian");
-        valido=1;
-        validg=1;
-        validp=2;
-        validt=1;
-        goto wankbank;
-    }
+
 
     if(strcmp("s",argv[1])==0){
         validp=0;
@@ -69,7 +71,16 @@ int main(int argc, char *argv[])
         percT=atoi(argv[4]);
     }
 
-    wankbank:
+    for (int i=0; i < strlen(argv[5];i++) {
+        if (isdigit(argv[5][i]==0){
+            validq = 1;
+        }
+    }
+
+    if (validq == 0){
+        trdCount = atoi(argv[5]);
+    }
+
     while (validp==2) {
         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
         validp = percStatus();
@@ -90,6 +101,13 @@ int main(int argc, char *argv[])
         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
         validt = percType();
     }
+
+    while (validq==1){
+         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
+         validq = trdReturn();
+    }
+
+    omp_set_num_threads(trdCount);
 
     if (validp==0){
         NODE **grid;

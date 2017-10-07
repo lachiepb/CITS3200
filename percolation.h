@@ -40,6 +40,7 @@ extern int gridS;
 extern float p;
 extern int percT;
 extern int lrgestCluster;
+extern int trdCount;
 #endif //CITS3200_PERCOLATION_H
 
 void exitStatus(char *ex);

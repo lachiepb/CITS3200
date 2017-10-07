@@ -100,6 +100,22 @@ int percType(void){
 
 }
 
+int trdReturn(void){
+    char temp[CHARLEN];
+    printf("\nEnter number of desired threads:");
+    scanf("%s",temp);
+    exitStatus(temp);
+
+    for (int i=0;i<strlen(temp);i++){
+        if (isdigit(temp[i]) == 0){
+            return 1;
+        }
+    }
+
+    trdCount=atoi(temp);
+    return 0;
+}
+
 //fucntion for creating a wraparound grid
 void joinGridN(NODE **grid){
     for (int i=0; i < gridS; i++){
@@ -279,15 +295,13 @@ int siteCheck(NODE **grid){
             int shitter=1;
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) 
             {
-                #pragma omp for
-                    for (int i=0; shitter>=1;i++){
+                while(isemptySite==1){
                         NODE *site;
                         #pragma omp critical
                         {
                             site = popSite();
                         }
                         clusterSize+=siteDFS(site,visitedRows,visitedCols);
-                        shitter = isemptySite();
                     }           
             }
 
@@ -394,18 +408,15 @@ int bondCheck(BOND **grid){
             visitedCols[j]=0;
             int clusterSize=0;
             pushBond(gridPoint);
-            int shitter=1;
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter)
+            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
             {
-                #pragma omp for 
-                for (int i=0; shitter>=1;i++){
+                while(isemptyBond==1){
                     BOND *bond;
                     #pragma omp critical 
                     {
                         bond = popBond();
                     }
                     clusterSize += bondDFS(bond, visitedRows, visitedCols);
-                    shitter = isemptyBond();
                     }
                 }
 
