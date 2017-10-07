@@ -277,14 +277,15 @@ int siteCheck(NODE **grid){
             //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             pushSite(gridPoint);
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols){
-                #pragma omp for {
-                    while(isemptySite()==1){
+                #pragma omp for
+                    for (int i=0; isemptySite()==1;i++){
+                        NODE *site;
                         #pragma omp critical {
-                            NODE *site = popSite();
+                            site = popSite();
                         }
                     clusterSize+=siteDFS(site,visitedRows,visitedCols);
                     }
-                }
+                
             }
 
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
