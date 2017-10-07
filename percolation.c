@@ -238,18 +238,18 @@ int siteDFS(NODE *gridPoint,int visitedRows[], int visitedCols[]){
         pushSite(gridPoint->north);
     }
 
-    if(gridPoint->south->visited==1 && ||gridPoint->south->occu==1){
+    if(gridPoint->south->visited==1 && gridPoint->south->occu==0){
         pushSite(gridPoint->south);
     }
 
-    if(gridPoint->east->visited==1 && ||gridPoint->east->occu==1){
+    if(gridPoint->east->visited==1 && gridPoint->east->occu==0){
         pushSite(gridPoint->east);
     }
 
-    if(gridPoint->west->visited==1 && ||gridPoint->west->occu==1){
+    if(gridPoint->west->visited==1 && gridPoint->west->occu==0){
         pushSite(gridPoint->west);
     }
-
+ 
     return 1;
 }
 
@@ -392,14 +392,14 @@ int bondCheck(BOND **grid){
             pushBond(gridPoint);
 
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols){
-                #pragma omp for {
-                while (isemptyBond()==1) {
+                #pragma omp for 
+                for (int i=0; isemptyBond()==1;i++){
+                    BOND *bond;
                         #pragma omp critical {
-                            BOND *bond = popBond();
+                            bond = popBond();
                         }
                     clusterSize += bondDFS(bond, visitedRows, visitedCols);
                     }
-                }
             }
 
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
