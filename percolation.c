@@ -367,46 +367,6 @@ int siteCheck(NODE **grid){
     return percolates;
 }
 
-int bondDFS(BOND *gridPoint,int visitedRows[], int visitedCols[]){
-    if(gridPoint->visited==0) return 0;
-    gridPoint->visited = 0;
-    if(gridPoint->rBond == 0 && gridPoint->check[0] == 1){
-        gridPoint->check[0] = 0;
-        gridPoint->east->check[2] = 0;
-        pushBond(gridPoint->east);
-    } else {
-        gridPoint->check[0] = 0;
-        gridPoint->east->check[2] = 0;
-    }
-
-    if(gridPoint->bBond == 0 && gridPoint->check[1] == 1){
-        gridPoint->check[1] = 0;
-        gridPoint->south->check[3] = 0;
-        pushBond(gridPoint->south);
-    } else {
-        gridPoint->check[1] = 0;
-        gridPoint->south->check[3] = 0;
-    }
-
-    if(gridPoint->west->rBond == 0 && gridPoint->check[2] == 1) {
-        gridPoint->check[2] = 0;
-        gridPoint->west->check[0] = 0;
-        pushBond(gridPoint->west);
-    } else {
-        gridPoint->check[2] = 0;
-        gridPoint->west->check[0] = 0;
-    }
-
-    if(gridPoint->north->bBond == 0 && gridPoint->check[3] == 1) {
-        gridPoint->check[3] = 0;
-        gridPoint->north->check[1] = 0;
-        pushBond(gridPoint->north);
-    } else {
-        gridPoint->check[3] = 0;
-        gridPoint->north->check[1] = 0;
-    }
-    return 1;
-}
 
 int bondCheck(BOND **grid){
     int  percolates = 1;
@@ -437,14 +397,54 @@ int bondCheck(BOND **grid){
                     {
                         if(isemptyBond()==1){
                             bond = popBond();
-                            visitedRows[bond->nodei]=0;
-                            visitedCols[bond->nodej]=0;
-                            temp=0;
+                            if (bond->visited==1){
+                                visitedRows[bond->nodei]=0;
+                                visitedCols[bond->nodej]=0;
+                                bond->visited=0;
+                                temp=0;
+                            }
                         }
                     }
 
+                    #pragma omp barrier
+
                     if (temp == 0){
-                        clusterSize += bondDFS(bond, visitedRows, visitedCols);
+                        if(bond->rBond == 0 && bond->check[0] == 1){
+                            bond->check[0] = 0;
+                            bond->east->check[2] = 0;
+                            pushBond(bond->east);
+                        } else {
+                            bond->check[0] = 0;
+                            bond->east->check[2] = 0;
+                        }
+
+                        if(bond->bBond == 0 && bond->check[1] == 1){
+                            bond->check[1] = 0;
+                            bond->south->check[3] = 0;
+                            pushBond(bond->south);
+                        } else {
+                            bond->check[1] = 0;
+                            bond->south->check[3] = 0;
+                        }
+
+                        if(bond->west->rBond == 0 && bond->check[2] == 1) {
+                            bond->check[2] = 0;
+                            bond->west->check[0] = 0;
+                            pushBond(bond->west);
+                        } else {
+                            bond->check[2] = 0;
+                            bond->west->check[0] = 0;
+                        }
+
+                        if(bond->north->bBond == 0 && bond->check[3] == 1) {
+                            bond->check[3] = 0;
+                            bond->north->check[1] = 0;
+                            pushBond(bond->north);
+                        } else {
+                            bond->check[3] = 0;
+                            bond->north->check[1] = 0;
+                        }
+                        clusterSize +=1;
                     }
                 }
             }

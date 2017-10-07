@@ -54,7 +54,5 @@ void joinGridN(NODE **grid);
 void joinGridB(BOND **grid);
 void sitePerc(NODE **grid);
 void bondPerc(BOND **grid);
-int siteDFS(NODE *gridPoint);
 int siteCheck(NODE **grid);
-int bondDFS(BOND *gridPoint,int visitedRows[], int visitedCols[]);
 int bondCheck(BOND **grid);
