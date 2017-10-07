@@ -9,8 +9,7 @@
 #endif //CITS3200_STACK_H
 
 extern BOND** stackB;
+
 int pushBond(BOND *data);
 BOND* popBond();
-BOND* peekBond();
-int isfullBond();
 int isemptyBond();

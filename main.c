@@ -7,9 +7,8 @@ int trdCount;
 
 int main(int argc, char *argv[])
 {
-    // expected input =  program name + site/bond + probablility + gridsize + percolation type (0, horiz, 1, vert, 2 vert+horiz)
-    //
 
+    //Number of arguments checkers
     if(argc>6){
         printf("Too many arguments supplied! (Exiting)");
         exit(EXIT_SUCCESS);
@@ -20,14 +19,16 @@ int main(int argc, char *argv[])
         exit(EXIT_SUCCESS);
     }
 
+    //Local variable for validity of input
     int valido=0;
     int validg=0;
     int validp;
     int validt=0;
     int validq=0;
+    //Random seeding of numbers
     srand(time(NULL));
 
-
+    //Check the validity of site or bond percolation argument
     if(strcmp("s",argv[1])==0){
         validp=0;
 
@@ -37,6 +38,7 @@ int main(int argc, char *argv[])
         validp=2;
     }
 
+    //check the validity of probability argument
     for (int i=0;i<strlen(argv[2]);i++){
         if (isdigit(argv[2][i]) == 0 && argv[2][i]!='.'){
             valido=1;
@@ -52,17 +54,18 @@ int main(int argc, char *argv[])
         }
     }
 
-    //gridsize
+    //Check Validity of grid argument
     for(int i=0; i < strlen(argv[3]);i++) {
         if (isdigit(argv[3][i]) == 0) {
             validg = 1;
         }
     }
-    //Check Validity of grid argument
+-
     if (validg == 0){
         gridS=atoi(argv[3]);
     }
-    // Check validity of Type Argument
+
+    // Check validity of type argument
     for (int i=0;i<strlen(argv[4]);i++) {
         if (isdigit(argv[4][i]) == 0) {
             validt = 1;
@@ -73,6 +76,7 @@ int main(int argc, char *argv[])
         percT=atoi(argv[4]);
     }
 
+    //Check the validity of thread number argument
     for (int i=0; i < strlen(argv[5]);i++) {
         if (isdigit(argv[5][i])==0){
             validq = 1;
@@ -83,6 +87,7 @@ int main(int argc, char *argv[])
         trdCount = atoi(argv[5]);
     }
 
+    //Request user input if any command line arguments are incorrect
     while (validp==2) {
         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
         validp = percStatus();
@@ -109,20 +114,26 @@ int main(int argc, char *argv[])
          validq = trdReturn();
     }
 
+    //Set number of threads that will be executed
     omp_set_num_threads(trdCount);
 
 
 
     if (validp==0){
+        //Allocate memory for stack
         stackS=malloc(4*(gridS)*(gridS)*sizeof(NODE*));
+        //Initialise grid of NODE and allocating memory
         NODE **grid;
         grid = (NODE **) malloc(sizeof(NODE *) * gridS);
         for (int i=0; i < gridS; i++){
             grid[i]= (NODE *) malloc(sizeof(NODE) * gridS);
         }
 
+        //Initialise grid of NODE and allocating memory
         joinGridN(grid);
+        //Seeding occupancy probability for nodes in the grid
         sitePerc(grid);
+        //Run percolation code for site percolation
         int ans = siteCheck(grid);
 
         if (ans==0){

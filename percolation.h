@@ -11,7 +11,7 @@
 #include <time.h>
 #include <omp.h>
 
-
+//Struct for site percolation
 typedef struct _g{
     struct _g *north;
     struct _g *south;
@@ -24,6 +24,7 @@ typedef struct _g{
 
 }NODE;
 
+//Struct for bond percolation
 typedef struct _p{
     struct _p *north;
     struct _p *south;
@@ -37,6 +38,7 @@ typedef struct _p{
     int check[4];
 
 }BOND;
+
 extern int gridS;
 extern float p;
 extern int percT;
