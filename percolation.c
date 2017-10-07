@@ -30,7 +30,7 @@ int occupancy(void){
     exitStatus(temp);
 
     for (int i=0;i<strlen(temp);i++){
-        if (isdigit(temp[i]) !=1  && temp[i]!='.'){
+        if (isdigit(temp[i]) ==0  && temp[i]!='.'){
             return 1;
         }
     }
@@ -276,7 +276,7 @@ int siteCheck(NODE **grid){
             int clusterSize=0;
             //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             pushSite(gridPoint);
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
+            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) {
                 #pragma omp for
                     for (int i=0; isemptySite()==1;i++){
                         NODE *site;
@@ -284,6 +284,7 @@ int siteCheck(NODE **grid){
                             site = popSite();
                     clusterSize+=siteDFS(site,visitedRows,visitedCols);
                     }
+            }
                 
 
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
@@ -390,7 +391,7 @@ int bondCheck(BOND **grid){
             int clusterSize=0;
             pushBond(gridPoint);
 
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
+            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) {
                 #pragma omp for 
                 for (int i=0; isemptyBond()==1;i++){
                     BOND *bond;
@@ -398,7 +399,7 @@ int bondCheck(BOND **grid){
                             bond = popBond();
                     clusterSize += bondDFS(bond, visitedRows, visitedCols);
                     }
-            
+            }
 
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
             if (percolates==1) {
