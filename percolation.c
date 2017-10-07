@@ -280,7 +280,7 @@ int siteCheck(NODE **grid){
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) 
             {
                 #pragma omp for
-                    for (int i=0; shitter==1;i++){
+                    for (int i=0; shitter>=1;i++){
                         NODE *site;
                         #pragma omp critical
                         {
@@ -398,7 +398,7 @@ int bondCheck(BOND **grid){
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter)
             {
                 #pragma omp for 
-                for (int i=0; shitter==1;i++){
+                for (int i=0; shitter>=1;i++){
                     BOND *bond;
                     #pragma omp critical 
                     {
