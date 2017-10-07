@@ -293,16 +293,19 @@ int siteCheck(NODE **grid){
             //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             pushSite(gridPoint);
             int shitter=1;
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) 
-            {
-                while(isemptySite()==1){
-                        NODE *site;
+            while(isemptySite()==1){
+                #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) 
+                {
+                
+                    NODE *site;
+                    if(isemptySite()==1){
                         #pragma omp critical
                         {
                             site = popSite();
                         }
                         clusterSize+=siteDFS(site,visitedRows,visitedCols);
                     }           
+                }
             }
 
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
@@ -408,10 +411,11 @@ int bondCheck(BOND **grid){
             visitedCols[j]=0;
             int clusterSize=0;
             pushBond(gridPoint);
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
-            {
-                while(isemptyBond()==1){
+            while(isemptyBond()==1){
+                #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
+                {
                     BOND *bond;
+                    if (isemptyBond()==1){
                     #pragma omp critical 
                     {
                         bond = popBond();
@@ -419,6 +423,7 @@ int bondCheck(BOND **grid){
                     clusterSize += bondDFS(bond, visitedRows, visitedCols);
                     }
                 }
+            }
 
             if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
             if (percolates==1) {
@@ -431,7 +436,8 @@ int bondCheck(BOND **grid){
                         if (e ==  gridS - 1){
                             percolates = 0;
                         }
-                    }                } else if (percT == 1){
+                    }                
+                } else if (percT == 1){
                     for (int e = 0; e < gridS; e++) {
                         if (visitedCols[e] == 1){
                             break;
