@@ -1,11 +1,20 @@
 #include "stackSite.h"
 
+int MAXSIZES=4*gridS*gridS;
 NODE** stackS;
 int topS = -1;
 
 //Check if stack is empty
 int isemptySite() {
     if(topS == -1)
+        return 0;
+    else
+        return 1;
+}
+
+//Check if stack is full
+int isfullSite() {
+    if(topS == MAXSIZES)
         return 0;
     else
         return 1;
