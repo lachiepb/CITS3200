@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
             validg = 1;
         }
     }
--
+
     if (validg == 0){
         gridS=atoi(argv[3]);
     }
