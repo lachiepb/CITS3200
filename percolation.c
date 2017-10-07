@@ -295,7 +295,7 @@ int siteCheck(NODE **grid){
             int shitter=1;
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) 
             {
-                while(isemptySite==1){
+                while(isemptySite()==1){
                         NODE *site;
                         #pragma omp critical
                         {
@@ -410,7 +410,7 @@ int bondCheck(BOND **grid){
             pushBond(gridPoint);
             #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)
             {
-                while(isemptyBond==1){
+                while(isemptyBond()==1){
                     BOND *bond;
                     #pragma omp critical 
                     {

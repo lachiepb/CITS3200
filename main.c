@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         percT=atoi(argv[4]);
     }
 
-    for (int i=0; i < strlen(argv[5];i++) {
+    for (int i=0; i < strlen(argv[5]);i++) {
         if (isdigit(argv[5][i]==0){
             validq = 1;
         }
