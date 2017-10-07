@@ -274,11 +274,16 @@ int siteCheck(NODE **grid){
             visitedCols[j]=0;
             // fill 0's
             int clusterSize=0;
-            if(gridPoint->occu==0) pushSite(gridPoint);
-            printf(" i %i j %i \n" ,i,j);
+
+            if(gridPoint->occu==0) {
+                pushSite(gridPoint);
+            } else {
+                gridPoint->visited=0;
+            }
+            //printf(" i %i j %i \n" ,i,j);
 
             while(isemptySite()==1){
-                #pragma omp parallel reduction(+:clusterSize) shared(i,j,visitedRows,visitedCols)
+                #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols)
                 {
                 
                     NODE *site;
@@ -293,14 +298,15 @@ int siteCheck(NODE **grid){
                                 visitedCols[site->nodej]=0;
                                 
                                 temp=0;
+
                             }
                             
                         }
                     }
-                    //printf("%i\n",topS);
-                    printf("%i  i %i j %i \n" ,isemptySite(),i,j);
+
                     #pragma omp barrier
                     if (temp == 0){
+                        //printf("%i and %i\n",site->nodei,site->nodej);
                         if(site->north->visited==1 && site->north->occu==0){
                             pushSite(site->north);
                         }
