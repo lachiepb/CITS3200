@@ -11,6 +11,7 @@
 #include <time.h>
 #include <omp.h>
 
+
 typedef struct _g{
     struct _g *north;
     struct _g *south;

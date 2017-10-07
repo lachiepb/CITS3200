@@ -1,7 +1,8 @@
 #include "stackSite.h"
 // Awful space performance, we know. we have plenty of memory though.
 int MAXSIZES = 100000000;
-NODE* stackS[100000000];
+NODE** stackS;
+//NODE* stackS[100000000];
 int topS = -1;
 
 int isemptySite() {

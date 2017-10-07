@@ -293,7 +293,7 @@ int siteCheck(NODE **grid){
             //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             pushSite(gridPoint);
             while(isemptySite()==1){
-                #pragma omp parallel shared(clusterSize,visitedRows,visitedCols,stackSite)  
+                #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols,stackS)  
                 {
                 
                     NODE *site;

@@ -7,6 +7,8 @@
 #include"percolation.h"
 
 #endif //CITS3200_STACK_H
+
+extern BOND* StackB[];
 int pushBond(BOND *data);
 BOND* popBond();
 BOND* peekBond();

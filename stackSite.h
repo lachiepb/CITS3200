@@ -7,6 +7,7 @@
 #include"percolation.h"
 
 #endif //CITS3200_STACK_H
+extern NODE** stackS;
 int pushSite(NODE *data);
 NODE* popSite();
 NODE* peekSite();

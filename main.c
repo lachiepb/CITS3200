@@ -1,5 +1,7 @@
 
 #include"percolation.h"
+#include"stackSite.h"
+#include"stackBond.h"
 
 int trdCount;
 
@@ -108,6 +110,8 @@ int main(int argc, char *argv[])
     }
 
     omp_set_num_threads(trdCount);
+
+    stackS=malloc((gridS)*(gridS)*sizeof(NODE*));
 
     if (validp==0){
         NODE **grid;
