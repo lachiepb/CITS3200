@@ -277,15 +277,17 @@ int siteCheck(NODE **grid){
             //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             pushSite(gridPoint);
             int shitter=1;
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) {
+            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter) 
+            {
                 #pragma omp for
                     for (int i=0; shitter==1;i++){
                         NODE *site;
-                        #pragma omp critical {
+                        #pragma omp critical
+                        {
                             site = popSite();
                         }
-                    clusterSize+=siteDFS(site,visitedRows,visitedCols);
-                    shitter = isemptySite();
+                        clusterSize+=siteDFS(site,visitedRows,visitedCols);
+                        shitter = isemptySite();
                     }           
             }
 
@@ -393,13 +395,15 @@ int bondCheck(BOND **grid){
             int clusterSize=0;
             pushBond(gridPoint);
             int shitter=1;
-            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter){
+            #pragma omp parallel shared(clusterSize,visitedRows,visitedCols) private(shitter)
+            {
                 #pragma omp for 
                 for (int i=0; shitter==1;i++){
                     BOND *bond;
-                        #pragma omp critical {
-                            bond = popBond();
-                        }
+                    #pragma omp critical 
+                    {
+                        bond = popBond();
+                    }
                     clusterSize += bondDFS(bond, visitedRows, visitedCols);
                     shitter = isemptyBond();
                     }
