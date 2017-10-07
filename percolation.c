@@ -237,8 +237,8 @@ int siteCheck(NODE **grid){
     for(int i=0;i<gridS;i++){
         for(int j=0;j<gridS;j++){
             NODE *gridPoint=&grid[i][j];
-            //If grid has been visited or is not occupied skip node
-            if(gridPoint->visited==0 || gridPoint->occu==1) continue;
+            //If grid has been visited skip node
+            if(gridPoint->visited==0) continue;
             //Array for checking if it percolates
             int visitedRows[gridS];
             int visitedCols[gridS];
@@ -252,8 +252,10 @@ int siteCheck(NODE **grid){
             visitedCols[j]=0;
             int clusterSize=0;
             //Push site onto stack
+            if (gridPoint->occu==1){
                 pushSite(gridPoint);
-                gridPoint->visited=0;
+            }
+            gridPoint->visited=0;
             //DFS
             while(isemptySite()==1){
                 //Multi thread DFS
