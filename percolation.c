@@ -252,10 +252,9 @@ int siteCheck(NODE **grid){
             visitedCols[j]=0;
             int clusterSize=0;
             //Push site onto stack
-            if (gridPoint->occu==1){
+            if (gridPoint->occu==0){
                 pushSite(gridPoint);
             }
-            gridPoint->visited=0;
             //DFS
             while(isemptySite()==1){
                 //Multi thread DFS
@@ -268,14 +267,12 @@ int siteCheck(NODE **grid){
                     {
                         if(isemptySite()==1){
                             site = popSite();
-                            if (site->visited==1){
+                            if(site->visited==1){
                                 site->visited=0;
                                 visitedRows[site->nodei]=0;
                                 visitedCols[site->nodej]=0;
                                 temp=0;
-
                             }
-                            
                         }
                     }
                     //Wait for all thread to hit this barrier
