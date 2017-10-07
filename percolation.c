@@ -292,21 +292,19 @@ int siteCheck(NODE **grid){
             int clusterSize=0;
             //int clusterSize=siteDFS(gridPoint,visitedRows,visitedCols);
             pushSite(gridPoint);
-            int shitter=1;
             while(isemptySite()==1){
-                #pragma omp parallel shared(clusterSize,visitedRows,visitedCols)  
+                #pragma omp parallel shared(clusterSize,visitedRows,visitedCols,stackSite)  
                 {
                 
                     NODE *site;
                     int temp=1;
-                    
-                        #pragma omp critical
-                        {
-                            if(isemptySite()==1){
-                                site = popSite();
-                                temp=0;
-                            }
+                    #pragma omp critical
+                    {
+                        if(isemptySite()==1){
+                            site = popSite();
+                            temp=0;
                         }
+                    }
 
                     if (temp == 0){
                         clusterSize+=siteDFS(site,visitedRows,visitedCols);
