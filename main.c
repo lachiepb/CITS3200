@@ -121,9 +121,9 @@ int main(int argc, char *argv[])
         int ans = siteCheck(grid);
 
         if (ans==0){
-            printf("\n The grid percolates with largest cluster %i",lrgestCluster,stdout);
+            printf("\n The grid percolates with largest cluster %i\n",lrgestCluster);
         } else {
-            printf("\n The grid does not percolate and has a largest cluster of %i",lrgestCluster,stdout);
+            printf("\n The grid does not percolate and has a largest cluster of %i\n",lrgestCluster);
         }
     } else {
         BOND **grid;
