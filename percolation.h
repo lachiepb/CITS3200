@@ -48,6 +48,7 @@ int occupancy(void);
 int gridSize(void);
 int percStatus(void);
 int percType(void);
+int trdReturn(void);
 void joinGridN(NODE **grid);
 void joinGridB(BOND **grid);
 void sitePerc(NODE **grid);

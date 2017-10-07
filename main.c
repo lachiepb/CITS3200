@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     }
 
     for (int i=0; i < strlen(argv[5]);i++) {
-        if (isdigit(argv[5][i]==0){
+        if (isdigit(argv[5][i])==0){
             validq = 1;
         }
     }
@@ -137,9 +137,9 @@ int main(int argc, char *argv[])
         int ans = bondCheck(grid);
 
         if (ans==0){
-            printf("\n The grid percolates with largest cluster %i",lrgestCluster,stdout);
+            printf("\n The grid percolates with largest cluster %i\n",lrgestCluster);
         } else {
-            printf("\n The grid does not percolate and has a largest cluster of %i",lrgestCluster,stdout);
+            printf("\n The grid does not percolate and has a largest cluster of %i\n",lrgestCluster);
         }
     }
 
