@@ -1,0 +1,1 @@
+/usr/bin/cc  -fopenmp   CMakeFiles/CITS3200.dir/percolation.c.o CMakeFiles/CITS3200.dir/stackSite.c.o CMakeFiles/CITS3200.dir/stackBond.c.o CMakeFiles/CITS3200.dir/main.c.o  -o CITS3200 

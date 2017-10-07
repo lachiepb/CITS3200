@@ -8,6 +8,7 @@
 
 #endif //CITS3200_STACK_H
 extern NODE** stackS;
+extern int topS;
 int pushSite(NODE *data);
 NODE* popSite();
 NODE* peekSite();

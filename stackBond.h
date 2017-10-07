@@ -8,7 +8,7 @@
 
 #endif //CITS3200_STACK_H
 
-extern BOND* StackB[];
+extern BOND** stackB;
 int pushBond(BOND *data);
 BOND* popBond();
 BOND* peekBond();

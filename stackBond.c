@@ -1,7 +1,7 @@
 #include "stackBond.h"
 // Awful space performance, we know. we have plenty of memory though.
 int MAXSIZEB = 100000000;
-BOND* stackB[100000000];
+BOND** stackB;
 int topB = -1;
 
 int isemptyBond() {

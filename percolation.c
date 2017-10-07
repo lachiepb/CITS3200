@@ -244,28 +244,12 @@ void bondPerc(BOND **grid){
     }
 }
 // fetch from queue, add to queue.
-int siteDFS(NODE *gridPoint,int visitedRows[], int visitedCols[]){
-    if(gridPoint->visited==0||gridPoint->occu==1) return 0;
-    visitedRows[gridPoint->nodei]=0;
-    visitedCols[gridPoint->nodej]=0;
-    gridPoint->visited=0;
+int siteDFS(NODE *gridPoint){
+    if(gridPoint->occu==1) return 0;
+    
+    
+    
 
-    if(gridPoint->north->visited==1 && gridPoint->north->occu==0){
-        pushSite(gridPoint->north);
-    }
-
-    if(gridPoint->south->visited==1 && gridPoint->south->occu==0){
-        pushSite(gridPoint->south);
-    }
-
-    if(gridPoint->east->visited==1 && gridPoint->east->occu==0){
-        pushSite(gridPoint->east);
-    }
-
-    if(gridPoint->west->visited==1 && gridPoint->west->occu==0){
-        pushSite(gridPoint->west);
-    }
- 
     return 1;
 }
 
@@ -290,10 +274,11 @@ int siteCheck(NODE **grid){
             visitedCols[j]=0;
             // fill 0's
             int clusterSize=0;
+            if(gridPoint->occu==0) pushSite(gridPoint);
+            printf(" i %i j %i \n" ,i,j);
 
-            pushSite(gridPoint);
             while(isemptySite()==1){
-                #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols,stackS)  
+                #pragma omp parallel reduction(+:clusterSize) shared(i,j,visitedRows,visitedCols)
                 {
                 
                     NODE *site;
@@ -302,12 +287,36 @@ int siteCheck(NODE **grid){
                     {
                         if(isemptySite()==1){
                             site = popSite();
-                            temp=0;
+                            if (site->visited==1){
+                                site->visited=0;
+                                visitedRows[site->nodei]=0;
+                                visitedCols[site->nodej]=0;
+                                
+                                temp=0;
+                            }
+                            
                         }
                     }
-
+                    //printf("%i\n",topS);
+                    printf("%i  i %i j %i \n" ,isemptySite(),i,j);
+                    #pragma omp barrier
                     if (temp == 0){
-                        clusterSize+=siteDFS(site,visitedRows,visitedCols);
+                        if(site->north->visited==1 && site->north->occu==0){
+                            pushSite(site->north);
+                        }
+
+                        if(site->south->visited==1 && site->south->occu==0){
+                        pushSite(site->south);
+                        }
+
+                        if(site->east->visited==1 && site->east->occu==0){
+                        pushSite(site->east);
+                        }
+
+                        if(site->west->visited==1 && site->west->occu==0){
+                        pushSite(site->west);
+                        }
+                        clusterSize+=1;
                     }
                 }
             }
@@ -346,6 +355,7 @@ int siteCheck(NODE **grid){
                     }
                 }
             }
+            //Clear the array
         }
     }
     return percolates;
@@ -353,9 +363,6 @@ int siteCheck(NODE **grid){
 
 int bondDFS(BOND *gridPoint,int visitedRows[], int visitedCols[]){
     if(gridPoint->visited==0) return 0;
-
-    visitedRows[gridPoint->nodei]=0;
-    visitedCols[gridPoint->nodej]=0;
     gridPoint->visited = 0;
     if(gridPoint->rBond == 0 && gridPoint->check[0] == 1){
         gridPoint->check[0] = 0;
@@ -423,7 +430,9 @@ int bondCheck(BOND **grid){
                     #pragma omp critical 
                     {
                         if(isemptyBond()==1){
-                            site = popBond();
+                            bond = popBond();
+                            visitedRows[bond->nodei]=0;
+                            visitedCols[bond->nodej]=0;
                             temp=0;
                         }
                     }

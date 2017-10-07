@@ -1,0 +1,3 @@
+/home/lychee/Documents/CITS3402/CITS3200/CMakeFiles/rebuild_cache.dir
+/home/lychee/Documents/CITS3402/CITS3200/CMakeFiles/edit_cache.dir
+/home/lychee/Documents/CITS3402/CITS3200/CMakeFiles/CITS3200.dir

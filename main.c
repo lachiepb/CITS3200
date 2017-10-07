@@ -111,9 +111,10 @@ int main(int argc, char *argv[])
 
     omp_set_num_threads(trdCount);
 
-    stackS=malloc((gridS)*(gridS)*sizeof(NODE*));
+
 
     if (validp==0){
+        stackS=malloc(4*(gridS)*(gridS)*sizeof(NODE*));
         NODE **grid;
         grid = (NODE **) malloc(sizeof(NODE *) * gridS);
         for (int i=0; i < gridS; i++){
@@ -130,6 +131,7 @@ int main(int argc, char *argv[])
             printf("\n The grid does not percolate and has a largest cluster of %i\n",lrgestCluster);
         }
     } else {
+        stackB=malloc(4*(gridS)*(gridS)*sizeof(BOND*));
         BOND **grid;
         grid = (BOND **) malloc(sizeof(BOND *) * gridS);
         for (int i=0; i < gridS; i++){
@@ -146,7 +148,7 @@ int main(int argc, char *argv[])
             printf("\n The grid does not percolate and has a largest cluster of %i\n",lrgestCluster);
         }
     }
-
+    
 
     exit (EXIT_SUCCESS);
 }
