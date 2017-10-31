@@ -219,14 +219,11 @@ void bondPerc(BOND **grid){
 }
 
 int sitePerform (NODE **grid){
-    //Dynamically allocate number of threads
+    //Dynamically allocate number os mini squares
     int trdCount = gridS/500;
-    if (trdCount <= 0){
+    if (trdCount <= 0) {
         trdCount = 1;
     }
-    //set number of threads
-    omp_set_num_threads(trdCount);
-    //split grid into trdCount^2 number of squares and give each thread a square
     int gridSquares = trdCount^2;
     int splitS = 0;
     int moduloS = 0;
