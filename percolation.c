@@ -87,20 +87,6 @@ int percType(void){
 
 }
 
-//Function for thread count input
-int trdReturn(void){
-    char temp[CHARLEN];
-    printf("\nEnter number of desired threads:");
-    scanf("%s",temp);
-    exitStatus(temp);
-    for (int i=0;i<strlen(temp);i++){
-        if (isdigit(temp[i]) == 0){
-            return 1;
-        }
-    }
-    trdCount=atoi(temp);
-    return 0;
-}
 
 //Fucntion for creating a wraparound site percolation grid
 void joinGridN(NODE **grid){
@@ -230,6 +216,28 @@ void bondPerc(BOND **grid){
             }
         }
     }
+}
+
+int sitePerform (NODE **grid){
+    //Dynamically allocate number of threads
+    int trdCount = gridS/500;
+    if (trdCount <= 0){
+        trdCount = 1;
+    }
+    //set number of threads
+    omp_set_num_threads(trdCount);
+    //split grid into trdCount^2 number of squares and give each thread a square
+    int gridSquares = trdCount^2;
+    int splitS = 0;
+    int moduloS = 0;
+    if (GridS % trdCount != 0){
+        splitS = gridS/trdCount;
+        moduloS = gridS%trdCount;
+    } else {
+        splitS = gridS/trdCount;
+    }
+
+    for (int i)
 }
 
 

@@ -3,18 +3,17 @@
 #include"stackSite.h"
 #include"stackBond.h"
 
-int trdCount;
 
 int main(int argc, char *argv[])
 {
 
     //Number of arguments checkers
-    if(argc>6){
+    if(argc>5){
         printf("Too many arguments supplied! (Exiting)");
         exit(EXIT_SUCCESS);
     }
 
-    if(argc<6){
+    if(argc<5){
         printf("too few arguments, treating you like a base level plebian");
         exit(EXIT_SUCCESS);
     }
@@ -76,17 +75,6 @@ int main(int argc, char *argv[])
         percT=atoi(argv[4]);
     }
 
-    //Check the validity of thread number argument
-    for (int i=0; i < strlen(argv[5]);i++) {
-        if (isdigit(argv[5][i])==0){
-            validq = 1;
-        }
-    }
-
-    if (validq == 0){
-        trdCount = atoi(argv[5]);
-    }
-
     //Request user input if any command line arguments are incorrect
     while (validp==2) {
         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
@@ -108,16 +96,6 @@ int main(int argc, char *argv[])
         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
         validt = percType();
     }
-
-    while (validq==1){
-         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
-         validq = trdReturn();
-    }
-
-    //Set number of threads that will be executed
-    omp_set_num_threads(trdCount);
-
-
 
     if (validp==0){
         //Allocate memory for stack

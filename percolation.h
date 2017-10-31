@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <omp.h>
+#include <math.h>
 
 //Struct for site percolation
 typedef struct _g{
@@ -17,6 +18,7 @@ typedef struct _g{
     struct _g *south;
     struct _g *east;
     struct _g *west;
+    struct _g *parent;
     int clusterNum;
     int occu;
     int visited;
@@ -31,6 +33,7 @@ typedef struct _p{
     struct _p *south;
     struct _p *east;
     struct _p *west;
+    struct _g *parent;
     int clusterNum;
     int rBond;
     int bBond;
