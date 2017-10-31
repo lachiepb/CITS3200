@@ -10,6 +10,7 @@ int gridS = 0;
 float p = 0.0;
 int percT;
 int lrgestCluster;
+int currentCluster=0;
 
 //Function for exit status
 void exitStatus(char *ex){
@@ -457,5 +458,3 @@ int bondCheck(BOND **grid){
     }
     return percolates;
 }
-
-

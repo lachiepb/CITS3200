@@ -17,6 +17,7 @@ typedef struct _g{
     struct _g *south;
     struct _g *east;
     struct _g *west;
+    int clusterNum;
     int occu;
     int visited;
     int nodei;
@@ -30,6 +31,7 @@ typedef struct _p{
     struct _p *south;
     struct _p *east;
     struct _p *west;
+    int clusterNum;
     int rBond;
     int bBond;
     int visited;
