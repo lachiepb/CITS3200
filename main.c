@@ -97,6 +97,25 @@ int main(int argc, char *argv[])
         validt = percType();
     }
 
+    MPI_Init(NULL,NULL);
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+//    int trdCount = gridS/500;
+//    if (trdCount <= 0){
+//        trdCount = 1;
+//    }
+//    //split grid into trdCount^2 number of squares and give each thread a square
+//    int gridSquares = trdCount^2;
+//    int splitS = 0;
+//    int moduloS = 0;
+//    if (GridS % trdCount != 0){
+//        splitS = gridS/trdCount;
+//        moduloS = gridS%trdCount;
+//    } else {
+//        splitS = gridS/trdCount;
+//    }
+
+    for (int i)
     if (validp==0){
         //Allocate memory for stack
         stackS=malloc(4*(gridS)*(gridS)*sizeof(NODE*));

@@ -11,6 +11,7 @@
 #include <time.h>
 #include <omp.h>
 #include <math.h>
+#include <mpi.h>
 
 //Struct for site percolation
 typedef struct _g{

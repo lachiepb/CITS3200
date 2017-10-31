@@ -218,26 +218,6 @@ void bondPerc(BOND **grid){
     }
 }
 
-int sitePerform (NODE **grid){
-    //Dynamically allocate number os mini squares
-    int trdCount = gridS/500;
-    if (trdCount <= 0) {
-        trdCount = 1;
-    }
-    int gridSquares = trdCount^2;
-    int splitS = 0;
-    int moduloS = 0;
-    if (GridS % trdCount != 0){
-        splitS = gridS/trdCount;
-        moduloS = gridS%trdCount;
-    } else {
-        splitS = gridS/trdCount;
-    }
-
-    for (int i)
-}
-
-
 int siteCheck(NODE **grid){ 
     int percolates=1;
     for(int i=0;i<gridS;i++){
