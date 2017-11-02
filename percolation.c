@@ -269,22 +269,22 @@ int siteCheck(NODE **grid){
                 visitedRows[site->nodei]=0;
                 visitedCols[site->nodej]=0;
 
-                if(site->north->occu==0){
+                if(site->north->occu==0 && visitGrid[site->north->nodei][site->north->nodej]==1){
                     pushSite(site->north);
                     visitGrid[site->north->nodei][site->north->nodej]=0;
                 }
 
-                if(site->south->occu==0){
+                if(site->south->occu==0 && visitGrid[site->south->nodei][site->south->nodej]==1){
                     pushSite(site->south);
                     visitGrid[site->south->nodei][site->south->nodej]=0;
                 }
 
-                if(site->east->occu==0){
+                if(site->east->occu==0 && visitGrid[site->east->nodei][site->east->nodej]==1){
                     pushSite(site->east);
                     visitGrid[site->east->nodei][site->east->nodej]=0;
                 }
 
-                if(site->west->occu==0){
+                if(site->west->occu==0 && visitGrid[site->west->nodei][site->west->nodej]==1){
                     pushSite(site->west);
                     visitGrid[site->west->nodei][site->west->nodej]=0;
                 }
