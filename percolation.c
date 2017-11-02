@@ -290,48 +290,52 @@ int siteCheck(NODE **grid){
                 //Increase cluster size
                 clusterSize+=1;
             }
-#pragma omp critical
-            {
-                    //Update largest cluster, if current cluster is larger
-                    if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
-                    //If grid hasn't percolate yet, execute the following
-                    if (percolates == 1) {
-                        //If vertical percolation
-                        if (percT == 0) {
-                            //If any element in array is 1, exit loop
-                            for (int e = 0; e < gridS; e++) {
-                                if (visitedRows[e] == 1) {
-                                    break;
-                                }
-                                //Update percolate if reached the final element
-                                if (e == gridS - 1) {
-                                    percolates = 0;
-                                }
-                            }
-                            //If horizontal percolation
-                        } else if (percT == 1) {
-                            for (int e = 0; e < gridS; e++) {
-                                if (visitedCols[e] == 1) {
-                                    break;
-                                }
-
-                                if (e == gridS - 1) {
-                                    percolates = 0;
-                                }
-                            }
-                            //If vertical/ horizontal percolation
-                        } else {
-                            for (int e = 0; e < gridS; e++) {
-                                if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
-                                    break;
-                                }
-
-                                if (e == gridS - 1) {
-                                    percolates = 0;
-                                }
-                            }
+            //If grid hasn't percolate yet, execute the following
+            if (percolates == 1) {
+                int tempPerc = 1;
+                //If vertical percolation
+                if (percT == 0) {
+                    //If any element in array is 1, exit loop
+                    for (int e = 0; e < gridS; e++) {
+                        if (visitedRows[e] == 1) {
+                            break;
+                        }
+                        //Update percolate if reached the final element
+                        if (e == gridS - 1) {
+                            tempPerc = 0;
                         }
                     }
+                    //If horizontal percolation
+                } else if (percT == 1) {
+                    for (int e = 0; e < gridS; e++) {
+                        if (visitedCols[e] == 1) {
+                            break;
+                        }
+
+                        if (e == gridS - 1) {
+                            tempPerc = 0;
+                        }
+                    }
+                    //If vertical/ horizontal percolation
+                } else {
+                    for (int e = 0; e < gridS; e++) {
+                        if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
+                            break;
+                        }
+
+                        if (e == gridS - 1) {
+                            tempPerc = 0;
+                        }
+                    }
+                }
+            }
+#pragma omp critical
+            {
+                //Update largest cluster, if current cluster is larger
+                if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
+                if (tempPerc == 0){
+                    percolates = 0;
+                }
             }
         }
     }
