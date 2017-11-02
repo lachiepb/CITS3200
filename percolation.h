@@ -20,7 +20,7 @@ typedef struct _g{
     struct _g *east;
     struct _g *west;
     struct _g *parent;
-    int clusterNum;
+    //int clusterNum;
     int occu;
     int nodei;
     int nodej;
@@ -34,13 +34,11 @@ typedef struct _p{
     struct _p *east;
     struct _p *west;
     struct _g *parent;
-    int clusterNum;
+    //int clusterNum;
     int rBond;
     int bBond;
-    int visited;
     int nodei;
     int nodej;
-    int check[4];
 
 }BOND;
 

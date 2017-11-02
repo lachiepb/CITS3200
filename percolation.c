@@ -174,12 +174,8 @@ void joinGridB(BOND **grid){
             gp->east = &grid[NSEW[2]][j];
             gp->south = &grid[i][NSEW[1]];
             gp->north = &grid[i][NSEW[0]];
-            gp->visited = 1;
             gp->nodei=i;
             gp->nodej=j;
-            for (int k=0;k < 4; k++){
-                gp->check[k]=1;
-            }
         }
     }
 }
@@ -277,46 +273,46 @@ int siteCheck(NODE **grid){
                 //Increase cluster size
                 clusterSize+=1;
             }
-        }
-    }
 #pragma omp critical
-    {
-        //Update largest cluster, if current cluster is larger
-        if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
-        //If grid hasn't percolate yet, execute the following
-        if (percolates == 1) {
-            //If vertical percolation
-            if (percT == 0) {
-                //If any element in array is 1, exit loop
-                for (int e = 0; e < gridS; e++) {
-                    if (visitedRows[e] == 1) {
-                        break;
-                    }
-                    //Update percolate if reached the final element
-                    if (e == gridS - 1) {
-                        percolates = 0;
-                    }
-                }
-                //If horizontal percolation
-            } else if (percT == 1) {
-                for (int e = 0; e < gridS; e++) {
-                    if (visitedCols[e] == 1) {
-                        break;
-                    }
+            {
+                //Update largest cluster, if current cluster is larger
+                if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
+                //If grid hasn't percolate yet, execute the following
+                if (percolates == 1) {
+                    //If vertical percolation
+                    if (percT == 0) {
+                        //If any element in array is 1, exit loop
+                        for (int e = 0; e < gridS; e++) {
+                            if (visitedRows[e] == 1) {
+                                break;
+                            }
+                            //Update percolate if reached the final element
+                            if (e == gridS - 1) {
+                                percolates = 0;
+                            }
+                        }
+                        //If horizontal percolation
+                    } else if (percT == 1) {
+                        for (int e = 0; e < gridS; e++) {
+                            if (visitedCols[e] == 1) {
+                                break;
+                            }
 
-                    if (e == gridS - 1) {
-                        percolates = 0;
-                    }
-                }
-                //If vertical/ horizontal percolation
-            } else {
-                for (int e = 0; e < gridS; e++) {
-                    if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
-                        break;
-                    }
+                            if (e == gridS - 1) {
+                                percolates = 0;
+                            }
+                        }
+                        //If vertical/ horizontal percolation
+                    } else {
+                        for (int e = 0; e < gridS; e++) {
+                            if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
+                                break;
+                            }
 
-                    if (e == gridS - 1) {
-                        percolates = 0;
+                            if (e == gridS - 1) {
+                                percolates = 0;
+                            }
+                        }
                     }
                 }
             }
@@ -331,9 +327,9 @@ int siteCheck(NODE **grid){
 int bondCheck(BOND **grid){
     int  percolates = 1;
     for(int i=0;i<gridS;i++) {
+#pragma omp parallel for
         for (int j = 0; j < gridS; j++) {
             BOND *gridPoint = &grid[i][j];
-            if (gridPoint->visited == 0) continue;
             int visitedRows[gridS];
             int visitedCols[gridS];
             for (int p=0;p < gridS; p++){
@@ -345,91 +341,55 @@ int bondCheck(BOND **grid){
             int clusterSize=0;
             pushBond(gridPoint);
             while(isemptyBond()==1){
-                #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols)
-                {
                     BOND *bond;
-                    int temp;
-                    #pragma omp critical 
-                    {
-                        if(isemptyBond()==1){
                             bond = popBond();
-                            if (bond->visited==1){
                                 visitedRows[bond->nodei]=0;
                                 visitedCols[bond->nodej]=0;
-                                bond->visited=0;
-                                temp=0;
-                            }
-                        }
-                    }
-                    #pragma omp barrier
-                    //If there is a node, execute the following
-                    if (temp == 0){
                         //Check each bond, update check array and push node onto stack
-                        if(bond->rBond == 0 && bond->check[0] == 1){
-                            bond->check[0] = 0;
-                            bond->east->check[2] = 0;
+                        if(bond->rBond == 0){
                             pushBond(bond->east);
-                        } else {
-                            bond->check[0] = 0;
-                            bond->east->check[2] = 0;
                         }
-                        if(bond->bBond == 0 && bond->check[1] == 1){
-                            bond->check[1] = 0;
-                            bond->south->check[3] = 0;
+                        if(bond->bBond == 0){
                             pushBond(bond->south);
-                        } else {
-                            bond->check[1] = 0;
-                            bond->south->check[3] = 0;
                         }
-
-                        if(bond->west->rBond == 0 && bond->check[2] == 1) {
-                            bond->check[2] = 0;
-                            bond->west->check[0] = 0;
+                        if(bond->west->rBond == 0) {
                             pushBond(bond->west);
-                        } else {
-                            bond->check[2] = 0;
-                            bond->west->check[0] = 0;
                         }
-
-                        if(bond->north->bBond == 0 && bond->check[3] == 1) {
-                            bond->check[3] = 0;
-                            bond->north->check[1] = 0;
+                        if(bond->north->bBond == 0) {
                             pushBond(bond->north);
-                        } else {
-                            bond->check[3] = 0;
-                            bond->north->check[1] = 0;
                         }
                         clusterSize +=1;
                     }
-                }
-            }
-            if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
-            if (percolates==1) {
-                if (percT == 0) {
-                    for (int e = 0; e < gridS; e++) {
-                        if (visitedRows[e] == 1){
-                            break;
+#pragma omp critical
+            {
+                if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
+                if (percolates == 1) {
+                    if (percT == 0) {
+                        for (int e = 0; e < gridS; e++) {
+                            if (visitedRows[e] == 1) {
+                                break;
+                            }
+                            if (e == gridS - 1) {
+                                percolates = 0;
+                            }
                         }
-                        if (e ==  gridS - 1){
-                            percolates = 0;
+                    } else if (percT == 1) {
+                        for (int e = 0; e < gridS; e++) {
+                            if (visitedCols[e] == 1) {
+                                break;
+                            }
+                            if (e == gridS - 1) {
+                                percolates = 0;
+                            }
                         }
-                    }                
-                } else if (percT == 1){
-                    for (int e = 0; e < gridS; e++) {
-                        if (visitedCols[e] == 1){
-                            break;
-                        }
-                        if (e ==  gridS - 1){
-                            percolates = 0;
-                        }
-                    }
-                } else {
-                    for (int e = 0; e < gridS; e++) {
-                        if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
-                            break;
-                        }
-                        if (e == gridS - 1) {
-                            percolates = 0;
+                    } else {
+                        for (int e = 0; e < gridS; e++) {
+                            if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
+                                break;
+                            }
+                            if (e == gridS - 1) {
+                                percolates = 0;
+                            }
                         }
                     }
                 }
