@@ -135,7 +135,6 @@ void joinGridN(NODE **grid){
             gp->east = &grid[NSEW[2]][j];
             gp->south = &grid[i][NSEW[1]];
             gp->north = &grid[i][NSEW[0]];
-            gp->visited=1;
             gp->nodei=i;
             gp->nodej=j;
         }
@@ -175,7 +174,6 @@ void joinGridB(BOND **grid){
             gp->east = &grid[NSEW[2]][j];
             gp->south = &grid[i][NSEW[1]];
             gp->north = &grid[i][NSEW[0]];
-            gp->visited = 1;
             gp->nodei=i;
             gp->nodej=j;
         }
@@ -237,6 +235,13 @@ int siteCheck(NODE **grid){
             NODE *gridPoint=&grid[i][j];
             NODE *startPoint=&grid[i][j];
             int clusterSize=0;
+            //Push site onto stack
+            if (gridPoint->occu==0){
+                pushSite(gridPoint);
+            }else{
+                continue;
+            }
+
             //Array for checking if it percolates
             int visitedRows[gridS];
             int visitedCols[gridS];
@@ -248,12 +253,6 @@ int siteCheck(NODE **grid){
             //Set the current grid row and column to 0 (seen)
             visitedRows[i]=0;
             visitedCols[j]=0;
-            //Push site onto stack
-            if (gridPoint->occu==0 && gridPoint->visited==1){
-                pushSite(gridPoint);
-            }else{
-                continue;
-            }
 
             int visitGrid [gridS][gridS];
             for (int k=0;k<gridS;k++){
@@ -293,13 +292,6 @@ int siteCheck(NODE **grid){
             }
 #pragma omp critical
             {
-                if(startPoint->visited==1) {
-                    for (int t=0; t<gridS;t++){
-                        for (int s=0;s<gridS;s++){
-                            NODE *currGrid=&grid[i][j];
-                            currGrid->visited=0;
-                        }
-                    }
                     //Update largest cluster, if current cluster is larger
                     if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
                     //If grid hasn't percolate yet, execute the following
@@ -340,7 +332,6 @@ int siteCheck(NODE **grid){
                             }
                         }
                     }
-                }
             }
         }
     }

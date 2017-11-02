@@ -21,7 +21,6 @@ typedef struct _g{
     struct _g *west;
     struct _g *parent;
     //int clusterNum;
-    int visited;
     int occu;
     int nodei;
     int nodej;
@@ -36,7 +35,6 @@ typedef struct _p{
     struct _p *west;
     struct _g *parent;
     //int clusterNum;
-    int visited;
     int rBond;
     int bBond;
     int nodei;
