@@ -87,6 +87,20 @@ int percType(void){
 
 }
 
+//Function for thread count input
+int trdReturn(void){
+    char temp[CHARLEN];
+    printf("\nEnter number of desired threads:");
+    scanf("%s",temp);
+    exitStatus(temp);
+    for (int i=0;i<strlen(temp);i++){
+        if (isdigit(temp[i]) == 0){
+            return 1;
+        }
+    }
+    trdCount=atoi(temp);
+    return 0;
+}
 
 //Fucntion for creating a wraparound site percolation grid
 void joinGridN(NODE **grid){
@@ -121,7 +135,6 @@ void joinGridN(NODE **grid){
             gp->east = &grid[NSEW[2]][j];
             gp->south = &grid[i][NSEW[1]];
             gp->north = &grid[i][NSEW[0]];
-            gp->visited = 1;
             gp->nodei=i;
             gp->nodej=j;
         }
@@ -218,13 +231,13 @@ void bondPerc(BOND **grid){
     }
 }
 
-int siteCheck(NODE **grid){ 
+int siteCheck(NODE **grid){
     int percolates=1;
     for(int i=0;i<gridS;i++){
+#pragma omp parallel for
         for(int j=0;j<gridS;j++){
             NODE *gridPoint=&grid[i][j];
-            //If grid has been visited skip node
-            if(gridPoint->visited==0) continue;
+            int clusterSize=0;
             //Array for checking if it percolates
             int visitedRows[gridS];
             int visitedCols[gridS];
@@ -236,101 +249,80 @@ int siteCheck(NODE **grid){
             //Set the current grid row and column to 0 (seen)
             visitedRows[i]=0;
             visitedCols[j]=0;
-            int clusterSize=0;
             //Push site onto stack
-            if (gridPoint->occu==1){
+            if (gridPoint->occu==0){
                 pushSite(gridPoint);
             }
-            gridPoint->visited=0;
-            //DFS
             while(isemptySite()==1){
-                //Multi thread DFS
-                #pragma omp parallel reduction(+:clusterSize) shared(visitedRows,visitedCols)
-                {
-                    NODE *site;
-                    int temp=1;
-                    //Only a single thread can update information
-                    #pragma omp critical
-                    {
-                        if(isemptySite()==1){
-                            site = popSite();
-                            if (site->visited==1){
-                                site->visited=0;
-                                visitedRows[site->nodei]=0;
-                                visitedCols[site->nodej]=0;
-                                temp=0;
+                NODE *site;
+                site = popSite();
+                visitedRows[site->nodei]=0;
+                visitedCols[site->nodej]=0;
 
-                            }
-                            
-                        }
-                    }
-                    //Wait for all thread to hit this barrier
-                    #pragma omp barrier
-                    //Each thread add to stack when possible
-                    if (temp == 0){
-                        if(site->north->visited==1 && site->north->occu==0){
-                            pushSite(site->north);
-                        }
-
-                        if(site->south->visited==1 && site->south->occu==0){
-                        pushSite(site->south);
-                        }
-
-                        if(site->east->visited==1 && site->east->occu==0){
-                        pushSite(site->east);
-                        }
-
-                        if(site->west->visited==1 && site->west->occu==0){
-                        pushSite(site->west);
-                        }
-                        //Increase cluster size
-                        clusterSize+=1;
-                    }
+                if(site->north->occu==0){
+                    pushSite(site->north);
                 }
-            }
-            //Update largest cluster, if current cluster is larger
-            if (clusterSize>lrgestCluster)lrgestCluster=clusterSize;
-            //If grid hasn't percolate yet, execute the following
-            if (percolates==1) {
-                //If vertical percolation
-                if (percT == 0) {
-                    //If any element in array is 1, exit loop
-                    for (int e = 0; e < gridS; e++) {
-                        if (visitedRows[e] == 1){
-                            break;
-                        }
-                        //Update percolate if reached the final element
-                        if (e ==  gridS - 1){
-                            percolates = 0;
-                        }
-                    }
-                //If horizontal percolation
-                } else if (percT == 1){
-                    for (int e = 0; e < gridS; e++) {
-                        if (visitedCols[e] == 1){
-                            break;
-                        }
 
-                        if (e ==  gridS - 1){
-                            percolates = 0;
-                        }
-                    }
-                //If vertical/ horizontal percolation
-                } else {
-                    for (int e = 0; e < gridS; e++) {
-                        if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
-                            break;
-                        }
-
-                        if (e == gridS - 1) {
-                            percolates = 0;
-                        }
-                    }
+                if(site->south->occu==0){
+                    pushSite(site->south);
                 }
+
+                if(site->east->occu==0){
+                    pushSite(site->east);
+                }
+
+                if(site->west->occu==0){
+                    pushSite(site->west);
+                }
+                //Increase cluster size
+                clusterSize+=1;
             }
-            
         }
     }
+#pragma omp critical
+    {
+        //Update largest cluster, if current cluster is larger
+        if (clusterSize > lrgestCluster)lrgestCluster = clusterSize;
+        //If grid hasn't percolate yet, execute the following
+        if (percolates == 1) {
+            //If vertical percolation
+            if (percT == 0) {
+                //If any element in array is 1, exit loop
+                for (int e = 0; e < gridS; e++) {
+                    if (visitedRows[e] == 1) {
+                        break;
+                    }
+                    //Update percolate if reached the final element
+                    if (e == gridS - 1) {
+                        percolates = 0;
+                    }
+                }
+                //If horizontal percolation
+            } else if (percT == 1) {
+                for (int e = 0; e < gridS; e++) {
+                    if (visitedCols[e] == 1) {
+                        break;
+                    }
+
+                    if (e == gridS - 1) {
+                        percolates = 0;
+                    }
+                }
+                //If vertical/ horizontal percolation
+            } else {
+                for (int e = 0; e < gridS; e++) {
+                    if ((visitedCols[e] == 1 || visitedRows[e] == 1)) {
+                        break;
+                    }
+
+                    if (e == gridS - 1) {
+                        percolates = 0;
+                    }
+                }
+            }
+        }
+    }
+
     //Return if grid percolates or not
     return percolates;
 }

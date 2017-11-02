@@ -3,17 +3,18 @@
 #include"stackSite.h"
 #include"stackBond.h"
 
+int trdCount;
 
 int main(int argc, char *argv[])
 {
 
     //Number of arguments checkers
-    if(argc>5){
+    if(argc>6){
         printf("Too many arguments supplied! (Exiting)");
         exit(EXIT_SUCCESS);
     }
 
-    if(argc<5){
+    if(argc<6){
         printf("too few arguments, treating you like a base level plebian");
         exit(EXIT_SUCCESS);
     }
@@ -75,6 +76,17 @@ int main(int argc, char *argv[])
         percT=atoi(argv[4]);
     }
 
+    //Check the validity of thread number argument
+    for (int i=0; i < strlen(argv[5]);i++) {
+        if (isdigit(argv[5][i])==0){
+            validq = 1;
+        }
+    }
+
+    if (validq == 0){
+        trdCount = atoi(argv[5]);
+    }
+
     //Request user input if any command line arguments are incorrect
     while (validp==2) {
         printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
@@ -97,25 +109,16 @@ int main(int argc, char *argv[])
         validt = percType();
     }
 
-    MPI_Init(NULL,NULL);
-    int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-//    int trdCount = gridS/500;
-//    if (trdCount <= 0){
-//        trdCount = 1;
-//    }
-//    //split grid into trdCount^2 number of squares and give each thread a square
-//    int gridSquares = trdCount^2;
-//    int splitS = 0;
-//    int moduloS = 0;
-//    if (GridS % trdCount != 0){
-//        splitS = gridS/trdCount;
-//        moduloS = gridS%trdCount;
-//    } else {
-//        splitS = gridS/trdCount;
-//    }
+    while (validq==1){
+        printf ("\nInput was incorrect,try again, or insert 'EXIT' to exit");
+        validq = trdReturn();
+    }
 
-    for (int i)
+    //Set number of threads that will be executed
+    omp_set_num_threads(trdCount);
+
+
+
     if (validp==0){
         //Allocate memory for stack
         stackS=malloc(4*(gridS)*(gridS)*sizeof(NODE*));
@@ -156,8 +159,23 @@ int main(int argc, char *argv[])
             printf("\n The grid does not percolate and has a largest cluster of %i\n",lrgestCluster);
         }
     }
-    
+
 
     exit (EXIT_SUCCESS);
 }
 
+
+//    int trdCount = gridS/500;
+//    if (trdCount <= 0){
+//        trdCount = 1;
+//    }
+//    //split grid into trdCount^2 number of squares and give each thread a square
+//    int gridSquares = trdCount^2;
+//    int splitS = 0;
+//    int moduloS = 0;
+//    if (GridS % trdCount != 0){
+//        splitS = gridS/trdCount;
+//        moduloS = gridS%trdCount;
+//    } else {
+//        splitS = gridS/trdCount;
+//    }

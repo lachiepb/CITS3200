@@ -22,7 +22,6 @@ typedef struct _g{
     struct _g *parent;
     int clusterNum;
     int occu;
-    int visited;
     int nodei;
     int nodej;
 
